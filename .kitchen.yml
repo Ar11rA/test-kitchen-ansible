@@ -17,10 +17,8 @@ verifier:
  
 suites:
   - name: default
-    run_list:
-      - recipe[git_cookbook::default]
     verifier:
       inspec_tests:
-        - https://github.com/nathenharvey/tmp_compliance_profile
+        - test/smoke/default
     attributes:
 
