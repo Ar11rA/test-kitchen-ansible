@@ -2,6 +2,5 @@
 source 'https://supermarket.chef.io'
 
 # frozen_string_literal: true
-cookbook 'git_cookbook', path: '/Users/aritraaritra/Documents/Projects/test-kitchen-ansible/git_cookbook'
+cookbook 'git'
 
-metadata
