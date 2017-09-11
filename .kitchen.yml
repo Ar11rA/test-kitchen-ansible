@@ -25,13 +25,23 @@ verifier:
   name: inspec
 
 suites:
-  - name: default
+  - name: nodejs
     provisioner:
       name: ansible_playbook
       playbook: playbooks/nodejs-playbook.yml
-      hosts: default
+      hosts: nodejs
       ansible_version: latest
       require_chef_for_busser: false
     verifier:
       inspec_tests:
-        - test/integration/default
+        - test/integration/nodejs
+  - name: nexus
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/nexus-playbook.yml
+      hosts: nexus
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/nexus
