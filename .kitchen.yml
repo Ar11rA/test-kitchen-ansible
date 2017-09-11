@@ -2,6 +2,10 @@
 driver:
   name: vagrant
 
+provisioner:
+  name: ansible_playbook
+  roles_path: /Users/aritraaritra/Documents/Projects/test-kitchen-ansible/roles
+
 platforms:
   - name: ubuntu-16.04
     driver:
@@ -14,7 +18,7 @@ suites:
   - name: default
     provisioner:
       name: ansible_playbook
-      playbook: directory-playbook.yml
+      playbook: playbooks/nodejs-playbook.yml
       hosts: default
       ansible_version: latest
       require_chef_for_busser: false

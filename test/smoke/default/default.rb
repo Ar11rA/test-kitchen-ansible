@@ -8,3 +8,11 @@
 describe package('git') do
   it { should be_installed }
 end
+
+describe command('node -v') do
+   its('stdout') { should match /v6.11.3/ }
+end
+
+describe command('npm -v') do
+   its('stdout') { should match /3.10.10/ }
+end
