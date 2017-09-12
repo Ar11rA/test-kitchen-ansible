@@ -1,11 +1,8 @@
-- hosts: androidbuild
+- hosts: android
   
   become: yes
   become_user: root
-
-  pre_tasks:
-    - include: java-8.yml
-
+  
   roles:
     - ansiblebit.oracle-java
     - geerlingguy.git
