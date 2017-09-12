@@ -1,0 +1,68 @@
+- hosts: androidbuild
+  
+  become: yes
+  become_user: root
+
+  pre_tasks:
+    - include: java-8.yml
+
+  roles:
+    - ansiblebit.oracle-java
+    - geerlingguy.git
+    - geerlingguy.nodejs
+   
+  tasks:
+    - name: Install gulp
+      npm: name=gulp state=present global=yes
+
+    - name: Install Cordova
+      npm: name=cordova version='6.5.0' global=yes
+
+    - name: Install Development tools
+      yum:
+        name: "@Development tools"
+        state: present
+
+    - name: Set environment for android SDK
+      file:
+        path: /apps
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Download sdk tools
+      get_url:
+        url=http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+        dest=/apps/android-sdk_r24.4.1-linux.tgz
+
+    - name: Unarchive sdk tools
+      unarchive:
+        src: /apps/android-sdk_r24.4.1-linux.tgz
+        dest: /apps/
+        remote_src: True
+
+    - name: Set envs for android sdk
+      blockinfile:
+        path: /home/vagrant/.bash_profile
+        insertafter: EOF
+        block: |
+          export ANDROID_HOME=/apps/android-sdk-linux
+          export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH"
+
+    - name: Install Android SDKs
+      shell: "echo y | /apps/android-sdk-linux/tools/android update sdk -u --all --filter {{ item }}"
+      with_items:
+        - 1,2,4,27,39,144,145,151,152,171,177,179
+        - extra-android-m2repository
+        - extra-android-support
+      args: 
+        executable: "/bin/bash"
+    
+    - name: Set directory for jenkins
+      file:
+        path: /home/vagrant/jenkins
+        state: directory
+        owner: vagrant
+        group: vagrant
+        mode: 0755
