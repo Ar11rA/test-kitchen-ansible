@@ -24,10 +24,10 @@
       npm: path=/srv/todos_ui
       register: npm_finished
 
-    - name: Install screen command
-      yum:
-        name: screen
-        state: present
+    - name: Install pm2 to run server
+      npm: name=pm2 state=present global=yes
 
     - name: start react server
-      command: chdir=/srv/todos_ui npm start &
+      command: chdir=/srv/todos_ui nohup npm start &
+      async: 10
+      poll: 0     
