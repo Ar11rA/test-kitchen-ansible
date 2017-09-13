@@ -28,14 +28,14 @@ suites:
   - name: nodejs
     provisioner:
       name: ansible_playbook
-      playbook: playbooks/nodejs-playbook.yml
+      playbook: playbooks/todos-playbook.yml
       hosts: nodejs
       ansible_version: latest
       require_chef_for_busser: false
     verifier:
       inspec_tests:
-        - test/integration/nodejs
-  
+        - test/integration/todos
+           
   - name: nexus
     provisioner:
       name: ansible_playbook

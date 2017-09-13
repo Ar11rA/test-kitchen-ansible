@@ -1,0 +1,33 @@
+- hosts: nodejs
+  
+  become: yes
+  become_user: root
+
+  roles:
+    - geerlingguy.git
+    - geerlingguy.nodejs
+
+  tasks:
+    - name: Clone the todos ui repo
+      git:
+        repo: 'https://github.com/Ar11rA/todos_ui.git'
+        dest: /srv/todos_ui
+      register: git_finished
+
+    - name: Install gulp
+      npm: name=gulp state=present global=yes
+
+    - name: Install webpack
+      npm: name=webpack state=present global=yes
+
+    - name: Run NPM install
+      npm: path=/srv/todos_ui
+      register: npm_finished
+
+    - name: Install screen command
+      yum:
+        name: screen
+        state: present
+
+    - name: start react server
+      command: chdir=/srv/todos_ui npm start &
