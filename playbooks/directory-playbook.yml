@@ -1,0 +1,9 @@
+- hosts: default
+  tasks:
+    - name: Create directory dir_usr
+      file:
+        path: /dir_usr
+        state: directory
+        owner: root
+        group: root
+        mode: 0755

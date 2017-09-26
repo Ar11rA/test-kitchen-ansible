@@ -1,0 +1,8 @@
+- hosts: nodejs
+  
+  become: yes
+  become_user: root
+
+  roles:
+    - geerlingguy.nodejs
+   

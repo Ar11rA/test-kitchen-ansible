@@ -1,0 +1,8 @@
+---
+- src: geerlingguy.jenkins
+- src: savoirfairelinux.nexus3-oss
+- src: ansiblebit.oracle-java
+- src: geerlingguy.git
+- src: geerlingguy.nodejs
+- src: DavidWittman.redis
+- src: franklinkim.newrelic

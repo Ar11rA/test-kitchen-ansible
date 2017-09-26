@@ -1,0 +1,88 @@
+- name: configure the redis master
+  hosts: redis
+  become: yes
+  become_user: root
+  vars:
+    - redis_bind: 127.0.0.1
+    - redis_version: 2.8.19
+    - redis_port: 6379
+  roles:
+    - DavidWittman.redis
+  tasks:
+    - name: Install Development tools
+      yum:
+        name: "@Development tools"
+        state: present    
+    
+
+- name: configure the redis slave
+  hosts: redis
+  become: yes
+  become_user: root
+  vars:
+    - redis_bind: 127.0.0.1
+    - redis_version: 2.8.19
+    - redis_port: 6380
+    - redis_slaveof: 127.0.0.1 6379
+  roles:
+    - DavidWittman.redis
+
+- name: configure redis sentinel 1   
+  hosts: redis
+  become: yes
+  become_user: root
+  vars:
+    - redis_version: 2.8.19
+    - redis_sentinel: true
+    - redis_sentinel_bind: 127.0.0.1
+    - redis_sentinel_port: 26384
+    - redis_sentinel_monitors:
+      - name: redis
+        host: 127.0.0.1
+        port: 6379
+        quorum: 2
+        down_after_milliseconds: 5000
+        parallel_syncs: 1
+        failover_timeout: 10000
+  roles:
+    - DavidWittman.redis
+
+- name: configure redis sentinel 2
+  hosts: redis
+  become: yes
+  become_user: root
+  vars:
+    - redis_version: 2.8.19
+    - redis_sentinel: true
+    - redis_sentinel_bind: 127.0.0.1
+    - redis_sentinel_port: 26385
+    - redis_sentinel_monitors:
+      - name: redis
+        host: 127.0.0.1
+        port: 6379
+        quorum: 2
+        down_after_milliseconds: 5000
+        parallel_syncs: 1
+        failover_timeout: 10000
+  roles:
+    - DavidWittman.redis
+
+- name: configure redis sentinel 3
+  hosts: redis
+  become: yes
+  become_user: root
+  vars:
+    - redis_version: 2.8.19
+    - redis_sentinel: true
+    - redis_sentinel_bind: 127.0.0.1
+    - redis_sentinel_port: 26386
+    - redis_sentinel_monitors:
+      - name: redis
+        host: 127.0.0.1
+        port: 6379
+        quorum: 2
+        down_after_milliseconds: 5000
+        parallel_syncs: 1
+        failover_timeout: 100000
+  roles:
+    - DavidWittman.redis
