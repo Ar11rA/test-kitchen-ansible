@@ -1,0 +1,7 @@
+- hosts: newrelic
+  become: yes
+  roles:
+    - franklinkim.newrelic
+  vars:
+    newrelic_service_state: started
+    newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
