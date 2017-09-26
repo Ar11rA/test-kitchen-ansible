@@ -4,24 +4,61 @@ driver:
 
 provisioner:
   name: ansible_playbook
-  roles_path: /Users/aritraaritra/Documents/Projects/test-kitchen-ansible/roles
+  roles_path: roles
 
 platforms:
-  - name: ubuntu-16.04
+  - name: centos-7
     driver:
-      box: bento/ubuntu-16.04
+      box: bento/centos-7
+  - name: centos-6
+    driver:
+      box: bento/centos-6
+  
 
 verifier:
   name: inspec
 
 suites:
-  - name: default
+  - name: nodejs
     provisioner:
       name: ansible_playbook
-      playbook: playbooks/nodejs-playbook.yml
-      hosts: default
+      playbook: playbooks/todos-playbook.yml
+      hosts: nodejs
       ansible_version: latest
       require_chef_for_busser: false
     verifier:
       inspec_tests:
-        - test/smoke/default
+        - test/integration/todos
+           
+  - name: nexus
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/nexus-playbook.yml
+      hosts: nexus
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/nexus
+
+  - name: android
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/androidbuild-playbook.yml
+      hosts: android
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/android
+
+  - name: redis
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/redis-playbook.yml
+      hosts: redis
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/redis

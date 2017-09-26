@@ -1,0 +1,12 @@
+- hosts: nexus
+  vars:
+    nexus_version: '3.5.0-02'
+    nexus_config_npm: true
+  become: yes
+  become_user: root    
+  roles:
+    - role: ansiblebit.oracle-java
+      oracle_java_set_as_default: yes
+    - role: geerlingguy.apache
+      apache_create_vhosts: no
+    - role: savoirfairelinux.nexus3-oss
