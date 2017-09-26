@@ -22,3 +22,4 @@ This provides a bootstrap for the test kitchen framework in corporation with vag
 2. For installing the required roles:
 
   `ansible-galaxy install -r requirements.yml --roles-path=./roles`
+

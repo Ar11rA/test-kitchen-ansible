@@ -1,0 +1,18 @@
+[Unit]
+Description=Daemonized NodeJS App
+After=network.target
+
+[Service]
+WorkingDirectory=/srv/todos_ui
+ExecStart=/usr/bin/npm start
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodeapp
+User=vagrant
+Group=vagrant
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target

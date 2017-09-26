@@ -24,10 +24,12 @@
       npm: path=/srv/todos_ui
       register: npm_finished
 
-    - name: Install pm2 to run server
-      npm: name=pm2 state=present global=yes
+    - name: Create nodeapp service
+      copy: src=/home/vagrant/nodeapp.j2 dest=/etc/systemd/system/nodeapp.service
 
-    - name: start react server
-      command: chdir=/srv/todos_ui nohup npm start &
-      async: 10
-      poll: 0     
+    - name: Adding service to boot
+      systemd:
+        enabled: yes
+        name: nodeapp
+        state: started
+ 

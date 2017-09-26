@@ -26,7 +26,7 @@ describe command('gulp -v | grep CLI') do
 end
 
 describe command('webpack -v') do
-  its('stdout') { should match /3.5.6/ }
+  its('stdout') { should match /3.6.0/ }
 end
 
 describe file('/srv/todos_ui/node_modules') do
