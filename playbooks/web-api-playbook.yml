@@ -5,7 +5,7 @@
   
   vars:
     newrelic_service_state: started
-    newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
+    newrelic_license_key: <--enter new relic key-->
 
   roles:
     - geerlingguy.git
@@ -19,6 +19,9 @@
 
     - name: Install Cordova
       npm: name=cordova version='6.5.0' global=yes
+
+    - name: Install pm2
+      npm: name=pm2 version='2.5.0' global=yes
 
     - name: Install Development tools
       yum:
