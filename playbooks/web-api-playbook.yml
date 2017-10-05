@@ -13,7 +13,7 @@
     - geerlingguy.nodejs
     - franklinkim.newrelic
 
-   tasks:
+  tasks:
     - name: Install gulp
       npm: name=gulp state=present global=yes
 
@@ -24,4 +24,4 @@
       yum:
         name: "@Development tools"
         state: present
-    
+  
