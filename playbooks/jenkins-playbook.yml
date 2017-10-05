@@ -1,0 +1,16 @@
+- hosts: jenkins
+  vars:
+    jenkins_package_state: latest
+    jenkins_plugins:
+      - blueocean
+      - ghprb
+      - greenballs
+    jenkins_plugin_timeout: 120
+  become: yes
+  become_user: root
+
+  pre_tasks:
+    - include: java-8.yml
+    
+  roles:
+    - geerlingguy.jenkins

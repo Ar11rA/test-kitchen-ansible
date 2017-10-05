@@ -74,6 +74,17 @@ suites:
       inspec_tests:
         - test/integration/newrelic
 
+  - name: jenkins
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/jenkins-playbook.yml
+      hosts: jenkins
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/jenkins
+
   - name: webapi
     provisioner:
       name: ansible_playbook

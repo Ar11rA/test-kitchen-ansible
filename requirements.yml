@@ -7,3 +7,4 @@
 - src: DavidWittman.redis
 - src: franklinkim.newrelic
 - src: geerlingguy.docker
+- src: geerlingguy.jenkins
