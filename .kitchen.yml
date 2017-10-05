@@ -73,3 +73,14 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/newrelic
+
+  - name: webapi
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/web-api-playbook.yml
+      hosts: webapi
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/webapi
