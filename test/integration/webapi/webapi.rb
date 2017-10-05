@@ -18,6 +18,11 @@ describe command('npm -v') do
   its('stdout') { should match /3.10.10/ }
 end
 
+
+describe command('pm2 -v') do
+  its('stdout') { should match /2.7.1/ }
+end
+
 describe npm('gulp') do
   it { should be_installed }
   its('version') { should eq '3.9.1' }
