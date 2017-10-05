@@ -6,3 +6,4 @@
 - src: geerlingguy.nodejs
 - src: DavidWittman.redis
 - src: franklinkim.newrelic
+- src: geerlingguy.docker
