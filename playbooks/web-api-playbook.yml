@@ -6,6 +6,7 @@
   vars:
     newrelic_service_state: started
     newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
+    splunk_port: 8089
 
   roles:
     - geerlingguy.git
@@ -27,4 +28,39 @@
       yum:
         name: "@Development tools"
         state: present
-  
+
+    - name: Copy the splunk forwarder binaries into server
+      copy: 
+        src: /home/vagrant/splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
+        dest: /etc/
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+
+    - name: Create apps directory
+      file:
+        path: /apps
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Unarchive splunk forwarder tools
+      unarchive:
+        src: /home/vagrant/splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
+        dest: /apps/
+        remote_src: True
+    
+    - name: Set environment variables for splunk forwarder
+      blockinfile:
+        path: /home/vagrant/.bash_profile
+        insertafter: EOF
+        block: |
+          SPLUNK_HOME=/apps/splunkforwarder
+    
+    - name: Set splunk port for forwarder
+      command: /apps/splunkforwarder/bin/splunk set splunkd-port {{splunk_port}} --accept-license
+
+    - name: Start Splunk
+      command: /apps/splunkforwarder/bin/splunk start
+        

@@ -2,6 +2,26 @@ describe package('git') do
   it { should be_installed }
 end
 
+describe package('gcc') do
+  it { should be_installed }
+end
+
+describe package('make') do
+  it { should be_installed }
+end
+
+describe package('glibc') do
+  it { should be_installed }
+end
+
+describe package('automake') do
+  it { should be_installed }
+end
+
+describe package('autoconf') do
+  it { should be_installed }
+end
+
 describe command('which docker') do
   its('stdout') { should match /bin\/docker/ }
 end
@@ -48,4 +68,13 @@ describe file('/var/run/newrelic/nrsysmond.pid') do
   it { should be_file }
 end
 
+describe file('/apps/splunkforwarder') do
+  it { should exist }
+  it { should be_directory }
+end
 
+
+describe port(8089) do
+  it { should be_listening }
+  its('processes') {should include 'splunkd'}
+end
