@@ -53,6 +53,11 @@ describe npm('cordova') do
   its('version') { should eq '6.5.0' }
 end
 
+describe npm('pm2') do
+  it { should be_installed }
+  its('version') { should eq '2.5.0' }
+end
+
 describe file('/usr/sbin/nrsysmond') do
   it { should exist }
   it { should be_file }
