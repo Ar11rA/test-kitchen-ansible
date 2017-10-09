@@ -88,7 +88,7 @@ suites:
   - name: webapi
     provisioner:
       name: ansible_playbook
-      playbook: playbooks/web-api-playbook.yml
+      playbook: playbooks/webapi-playbook.yml
       hosts: webapi
       ansible_version: latest
       require_chef_for_busser: false

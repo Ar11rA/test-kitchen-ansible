@@ -1,0 +1,32 @@
+- hosts: webapi
+  
+  become: yes
+  become_user: root
+  
+  vars:
+    newrelic_service_state: started
+    newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
+    splunk_port: 8089
+
+  roles:
+    - geerlingguy.git
+    - geerlingguy.docker
+    - geerlingguy.nodejs
+    - franklinkim.newrelic
+    - ansible-webapi
+
+  tasks:
+    - name: Install gulp
+      npm: name=gulp state=present global=yes
+
+    - name: Install Cordova
+      npm: name=cordova version='6.5.0' global=yes
+
+    - name: Install PM2
+      npm: name=pm2 state=present global=yes
+
+    - name: Install Development tools
+      yum:
+        name: "@Development tools"
+        state: present
+        
