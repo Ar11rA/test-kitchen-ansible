@@ -6,6 +6,7 @@
   vars:
     newrelic_service_state: started
     newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
+    splunk_tarball: ../splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
     splunk_port: 8089
 
   roles:
