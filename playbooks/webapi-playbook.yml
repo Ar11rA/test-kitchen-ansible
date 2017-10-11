@@ -1,13 +1,65 @@
-- hosts: webapi
-  
+- hosts: api
+
   become: yes
   become_user: root
-  
+
   vars:
     newrelic_service_state: started
     newrelic_license_key: cdf0fcb82ce47636ab137dbb24961f64b1880bac
-    splunk_tarball: ../splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
+    splunk_tarball: /etc/ansible/splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
     splunk_port: 8089
+
+  pre_tasks:
+    - name: create directory
+      file:
+        path: /home/vagrant/packages
+        state: directory
+
+    - name: Check if file for gulp offline exist
+      stat:
+        path: /home/vagrant/packages/gulp-3.9.1.tgz
+      register: stat_result_gulp
+
+    - name: Check if file for cordova offline exist
+      stat:
+        path: /home/vagrant/packages/cordova-7.1.0.tgz
+      register: stat_result_cordova
+    
+    - name: Check if file for pm2 offline exist
+      stat:
+        path: /home/vagrant/packages/pm2-2.7.1.tgz
+      register: stat_result_pm2
+
+    - name: Check if file for new relic exists
+      stat:
+        path: /home/vagrant/new_relic_packages/newrelic-sysmond-2.3.0.132-1.x86_64.rpm
+      register: stat_result_new_relic
+
+    - name: copypackages
+      copy: src={{ item }} dest=/home/vagrant/packages
+      with_items:
+        - /etc/ansible/gulp-3.9.1.tgz
+        - /etc/ansible/cordova-7.1.0.tgz
+        - /etc/ansible/pm2-2.7.1.tgz
+      when:
+        - stat_result_gulp.stat.exists == False
+        - stat_result_cordova.stat.exists == False
+        - stat_result_pm2.stat.exists == False        
+
+  tasks:
+    - name: Install gulp
+      npm: name=/home/vagrant/gulp-3.9.1.tgz global=yes
+
+    - name: Install Cordova
+      npm: name=/home/vagrant/cordova-7.1.0.tgz global=yes
+
+    - name: Install PM2
+      npm: name=/home/vagrant/pm2-2.7.1.tgz global=yes
+
+    - name: Install Development tools
+      yum:
+        name: "@Development tools"
+        state: present
 
   roles:
     - geerlingguy.git
@@ -15,19 +67,3 @@
     - geerlingguy.nodejs
     - franklinkim.newrelic
     - ansible-webapi
-
-  tasks:
-    - name: Install gulp
-      npm: name=gulp state=present global=yes
-
-    - name: Install Cordova
-      npm: name=cordova version='6.5.0' global=yes
-
-    - name: Install PM2
-      npm: name=pm2 state=present global=yes
-
-    - name: Install Development tools
-      yum:
-        name: "@Development tools"
-        state: present
-        
