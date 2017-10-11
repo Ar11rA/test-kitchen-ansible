@@ -57,8 +57,6 @@
         state: present
 
   roles:
-    - geerlingguy.git
-    - geerlingguy.docker
     - geerlingguy.nodejs
     - franklinkim.newrelic
     - ansible-webapi
