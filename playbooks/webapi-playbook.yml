@@ -30,11 +30,6 @@
         path: /home/vagrant/packages/pm2-2.7.1.tgz
       register: stat_result_pm2
 
-    - name: Check if file for new relic exists
-      stat:
-        path: /home/vagrant/new_relic_packages/newrelic-sysmond-2.3.0.132-1.x86_64.rpm
-      register: stat_result_new_relic
-
     - name: copypackages
       copy: src={{ item }} dest=/home/vagrant/packages
       with_items:
@@ -48,13 +43,13 @@
 
   tasks:
     - name: Install gulp
-      npm: name=/home/vagrant/gulp-3.9.1.tgz global=yes
+      npm: name=/home/vagrant/packages/gulp-3.9.1.tgz global=yes
 
     - name: Install Cordova
-      npm: name=/home/vagrant/cordova-7.1.0.tgz global=yes
+      npm: name=/home/vagrant/packages/cordova-7.1.0.tgz global=yes
 
     - name: Install PM2
-      npm: name=/home/vagrant/pm2-2.7.1.tgz global=yes
+      npm: name=/home/vagrant/packages/pm2-2.7.1.tgz global=yes
 
     - name: Install Development tools
       yum:
