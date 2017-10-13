@@ -1,0 +1,37 @@
+---
+
+- name: Create apps log directory
+  file:
+    path: /apps/log
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Check if web api logs exist in var/log
+  stat: path=/var/log/web-api
+  register: var_log
+
+- name: Delete web api logs in apps
+  file:
+    state: absent
+    path: /apps/log/web-api
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Move var logs to app logs
+  command: mv /var/log/web-api /apps/log
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Link new log file to var logs
+  file:
+    src: /apps/log/web-api
+    dest: /var/log/web-api
+    owner: root
+    group: root
+    state: link
+    mode: 0755
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Restart splunk 
+  command: /apps/splunkforwarder/bin/splunk restart
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False

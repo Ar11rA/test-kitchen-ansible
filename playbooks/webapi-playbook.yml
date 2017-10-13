@@ -1,4 +1,4 @@
-- hosts: api
+- hosts: webapi
 
   become: yes
   become_user: root
@@ -59,4 +59,4 @@
   roles:
     - geerlingguy.nodejs
     - franklinkim.newrelic
-    - ansible-webapi
+    - ansible.webapi

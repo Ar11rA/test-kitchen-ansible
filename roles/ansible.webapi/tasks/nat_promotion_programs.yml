@@ -1,0 +1,55 @@
+---
+
+- name: Check if promotion programs converter directory exists
+  stat: path=/apps/promotion-programs
+  register: promotionprograms
+
+- name: Create directories for promotion programs
+  file:
+    path: /apps/promotion-programs
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not promotionprograms.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/promotion-programs/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/promotion-programs/promotion-programs.tgz
+    dest: /apps/promotion-programs
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/promotion-programs/promotion-programs.tgz
+    dest: /apps/promotion-programs
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+
+
+- name: Unarchive files
+  unarchive:
+    src: /apps/promotion-programs/promotion-programs.tgz
+    dest: /apps/promotion-programs
+    remote_src: True 
+
+- name: Check if folder exists for promotion programs
+  stat: path=/apps/promotion-programs/build
+  register: promotionprogramsbuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: promotionprogramsbuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/promotion-programs/build state=absent
+  when: promotionprogramsbuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command: ln -sf /apps/promotion-programs/PromotionPrograms.json /opt/web-api/latest/assets/PromotionPrograms.json

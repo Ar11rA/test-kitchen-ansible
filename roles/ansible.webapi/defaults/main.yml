@@ -1,0 +1,15 @@
+---
+# defaults file for ansible-webapi
+
+# splunk tar file for installing splunk
+splunk_tarball: false
+
+# port at which splunk forwarder will start
+splunk_port: 8089
+
+# nat and non nat urls
+nat_url: 10.54.13.91
+non_nat_url: 10.250.195.24
+
+# if nat configs needed, then set to true
+nat_web_api: false
