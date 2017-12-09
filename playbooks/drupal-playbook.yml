@@ -1,0 +1,57 @@
+---
+
+- hosts: drupal
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Download epel release 7
+      get_url:
+        url: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        dest: /home/vagrant
+        mode: 0755
+        force: no
+
+    - name: Download ius rpm
+      get_url:
+        url: https://centos7.iuscommunity.org/ius-release.rpm
+        dest: /home/vagrant
+        mode: 0755
+        force: no
+
+    - name: Install epel 7 package
+      command: "yum install -y /home/vagrant/epel-release-latest-7.noarch.rpm"
+      ignore_errors: True
+
+    - name: Install ius release package
+      command: "yum install -y /home/vagrant/ius-release-1.0-15.ius.centos7.noarch.rpm"
+      ignore_errors: True
+
+    - name: Import rpm key
+      command: "rpm --import /etc/pki/rpm-gpg/IUS-COMMUNITY-GPG-KEY"
+    
+    - name: Install php 7 and necessary packages
+      command: "yum install php70u-fpm-nginx php70u-cli php70u-mysqlnd php70u-json php70u-pecl-redis php70u-pecl-mysql php70u-pdo php70u-gd php70u-ftp php70u-xml php70u-pecl-igbinary php70u-mbstring -y"
+
+    - name: Download drush phar
+      get_url:
+        url: https://github.com/drush-ops/drush/releases/download/9.0.0-alpha1/drush.phar
+        dest: /home/vagrant
+        mode: 0644
+        force: yes
+    
+    - name: Install drush 
+      command: "php /home/vagrant/drush.phar"
+
+    - name: "Download nginx"
+      command: "yum install -y nginx"
+
+    - name: Assign nginx to apps user
+      command: "chown -R apps:apps /etc/nginx"
+    
+    - name: Assign php-fpm conf to apps user
+      command: "chown -R apps:apps /etc/php-fpm.conf"
+
+    - name: Assign php-fpm dir to apps user
+      command: "chown -R apps:apps /etc/php-fpm.d"
+

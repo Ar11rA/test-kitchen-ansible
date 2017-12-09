@@ -1,0 +1,17 @@
+---
+
+- name: Set up logroation for pm2
+  template:
+    src: logrotate-pm2.conf.j2
+    dest: /etc/logrotate.d/pm2.conf
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Set up logroation for web api 
+  template:
+    src: logrotate-web-api.conf.j2
+    dest: /etc/logrotate.d/web-api.conf
+    owner: root
+    group: root
+    mode: 0755

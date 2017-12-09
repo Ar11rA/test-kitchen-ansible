@@ -1,0 +1,55 @@
+---
+
+- name: Check if loyalty-rewards-catalogue converter directory exists
+  stat: path=/apps/loyalty-rewards-catalogue
+  register: loyalty
+
+- name: Create directories for promtion programs
+  file:
+    path: /apps/loyalty-rewards-catalogue
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not loyalty.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/loyalty-rewards-catalogue/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/loyalty-rewards-catalogue/loyalty-rewards-catalogue.tgz
+    dest: /apps/loyalty-rewards-catalogue
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/loyalty-rewards-catalogue/loyalty-rewards-catalogue.tgz
+    dest: /apps/loyalty-rewards-catalogue
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+
+
+- name: Unarchive files
+  unarchive:
+    src: /apps/loyalty-rewards-catalogue/loyalty-rewards-catalogue.tgz
+    dest: /apps/loyalty-rewards-catalogue
+    remote_src: True 
+
+- name: Check if folder exists for loyalty-rewards-catalogue
+  stat: path=/apps/loyalty-rewards-catalogue/build
+  register: loyaltybuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: loyaltybuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/loyalty-rewards-catalogue/build state=absent
+  when: loyaltybuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command:  ln -sf /apps/loyalty-rewards-catalogue/LoyaltyPointCatalogue.json /opt/web-api/latest/assets/LoyaltyPointCatalogue.json

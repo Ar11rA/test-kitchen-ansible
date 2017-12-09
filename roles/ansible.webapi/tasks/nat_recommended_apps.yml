@@ -1,0 +1,55 @@
+---
+
+- name: Check if recommended-apps converter directory exists
+  stat: path=/apps/recommended-apps
+  register: recapps
+
+- name: Create directories for recommended-apps
+  file:
+    path: /apps/recommended-apps
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not recapps.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/recommended-apps/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/recommended-apps/recommended-apps.tgz
+    dest: /apps/recommended-apps
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/recommended-apps/recommended-apps.tgz
+    dest: /apps/recommended-apps
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+
+
+- name: Unarchive files
+  unarchive:
+    src: /apps/recommended-apps/recommended-apps.tgz
+    dest: /apps/recommended-apps
+    remote_src: True 
+
+- name: Check if folder exists for recommended-apps
+  stat: path=/apps/recommended-apps/build
+  register: recappsbuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: recappsbuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/recommended-apps/build state=absent
+  when: recappsbuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command: ln -sf /apps/recommended-apps/recommendedApps.json /opt/web-api/latest/assets/recommendedApps.json

@@ -1,0 +1,29 @@
+---
+
+- name: Check if pm2 logs exist in var/log
+  stat: path=/var/log/pm2
+  register: var_log
+
+- name: Delete pm2 logs in apps
+  file:
+    state: absent
+    path: /apps/log/pm2
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Move var logs to app logs
+  command: mv /var/log/pm2 /apps/log
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Link new log file to var logs
+  file:
+    src: /apps/log/pm2
+    dest: /var/log/pm2
+    owner: root
+    group: root
+    mode: 0755
+    state: link
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Restart pm2 
+  command: /etc/init.d/pm2 restart
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False

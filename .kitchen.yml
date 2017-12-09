@@ -10,11 +10,7 @@ platforms:
   - name: centos-7
     driver:
       box: bento/centos-7
-  - name: centos-6
-    driver:
-      box: bento/centos-6
-  
-
+      
 verifier:
   name: inspec
 
@@ -73,3 +69,36 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/newrelic
+
+  - name: jenkins
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/jenkins-playbook.yml
+      hosts: jenkins
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/jenkins
+
+  - name: webapi
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/webapi-playbook.yml
+      hosts: webapi
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/webapi
+
+  - name: drupal
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/drupal-playbook.yml
+      hosts: drupal
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/drupal

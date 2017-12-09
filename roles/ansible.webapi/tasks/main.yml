@@ -1,0 +1,13 @@
+---
+
+- include: splunk.yml
+- include: symlink_web_api.yml
+- include: symlink_new_relic.yml
+- include: symlink_pm2.yml
+- include: nat_flash_sale.yml
+- include: nat_loyalty_rewards_catalogue.yml
+- include: nat_payment_method.yml
+- include: nat_prepaid_voucher.yml
+- include: nat_promotion_programs.yml
+- include: nat_recommended_apps.yml
+- include: logrotate.yml

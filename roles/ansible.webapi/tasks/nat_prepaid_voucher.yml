@@ -1,0 +1,54 @@
+---
+
+- name: Check if prepaid-voucher converter directory exists
+  stat: path=/apps/prepaid-voucher
+  register: prepaid
+
+- name: Create directories for promtion programs
+  file:
+    path: /apps/prepaid-voucher
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not prepaid.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/prepaid-voucher/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/prepaid-voucher/prepaid-voucher.tgz
+    dest: /apps/prepaid-voucher
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/prepaid-voucher/prepaid-voucher.tgz
+    dest: /apps/prepaid-voucher
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+
+- name: Unarchive files
+  unarchive:
+    src: /apps/prepaid-voucher/prepaid-voucher.tgz
+    dest: /apps/prepaid-voucher
+    remote_src: True 
+
+- name: Check if folder exists for prepaid-voucher
+  stat: path=/apps/prepaid-voucher/build
+  register: prepaidbuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: prepaidbuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/prepaid-voucher/build state=absent
+  when: prepaidbuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command:  ln -sf /apps/prepaid-voucher/vouchers.json /opt/web-api/latest/assets/vouchers.json

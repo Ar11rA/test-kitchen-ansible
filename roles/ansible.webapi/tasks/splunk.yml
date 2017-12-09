@@ -1,0 +1,52 @@
+---
+- name: Create apps directory
+  file:
+    path: /apps
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Check if splunk forwarder already installed
+  stat: path=/apps/splunkforwarder
+  register: splunk_installed
+
+- name: Download splunk from internet
+  get_url:
+    url: http://download.splunk.com/products/universalforwarder/releases/5.0.2/linux/splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
+    dest: /home/vagrant/
+  when: 
+    - not splunk_tarball
+    - not splunk_installed.stat.exists
+
+- name: upload splunk tarball
+  copy:
+      src: "{{ splunk_tarball }}"
+      dest: /home/vagrant/
+  when: 
+    - splunk_tarball|default(false)
+    - not splunk_installed.stat.exists
+
+- name: Unarchive splunk forwarder tools
+  unarchive:
+    src: /home/vagrant/splunkforwarder-5.0.2-149561-Linux-x86_64.tgz
+    dest: /apps/
+    remote_src: True
+  when: not splunk_installed.stat.exists
+
+- name: Set environment variables for splunk forwarder
+  blockinfile:
+    path: /home/vagrant/.bash_profile
+    insertafter: EOF
+    block: |
+      SPLUNK_HOME=/apps/
+  when: not splunk_installed.stat.exists
+
+- name: Set splunk port for forwarder
+  command: /apps/splunkforwarder/bin/splunk set splunkd-port 8089 --accept-license
+  when: not splunk_installed.stat.exists
+
+- name: Start Splunk
+  command: /apps/splunkforwarder/bin/splunk start
+  when: not splunk_installed.stat.exists
+    

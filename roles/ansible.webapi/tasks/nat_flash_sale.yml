@@ -1,0 +1,54 @@
+---
+
+- name: Check if flash sale converter directory exists
+  stat: path=/apps/flash-sale-converter
+  register: flashinstalled
+
+- name: Create directories for flash sale
+  file:
+    path: /apps/flash-sale-converter
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not flashinstalled.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/flash-sale-converter/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/flash-sale-converter/flash-sale-converter.tgz
+    dest: /apps/flash-sale-converter
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/flash-sale-converter/flash-sale-converter.tgz
+    dest: /apps/flash-sale-converter
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+    
+- name: Unarchive files
+  unarchive:
+    src: /apps/flash-sale-converter/flash-sale-converter.tgz
+    dest: /apps/flash-sale-converter
+    remote_src: True
+
+- name: Check if folder exists for flash sale converter
+  stat: path=/apps/flash-sale-converter/build
+  register: flashinstalledbuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: flashinstalledbuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/flash-sale-converter/build state=absent
+  when: flashinstalledbuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command: ln -sf /apps/flash-sale-converter/FlashSale.json /opt/web-api/latest/assets/FlashSale.json

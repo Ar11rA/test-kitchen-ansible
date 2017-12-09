@@ -1,0 +1,29 @@
+---
+
+- name: Check if new relic logs exist in var/log
+  stat: path=/var/log/newrelic
+  register: var_log
+
+- name: Delete new relic logs in apps
+  file:
+    state: absent
+    path: /apps/log/newrelic
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Move var logs to app logs
+  command: mv /var/log/newrelic /apps/log
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Link new log file to var logs
+  file:
+    src: /apps/log/newrelic
+    dest: /var/log/newrelic
+    owner: root
+    group: root
+    state: link
+    mode: 0755
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False
+
+- name: Restart new relic 
+  command: /etc/init.d/newrelic-sysmond restart
+  when: var_log.stat.islnk is defined and var_log.stat.islnk == False

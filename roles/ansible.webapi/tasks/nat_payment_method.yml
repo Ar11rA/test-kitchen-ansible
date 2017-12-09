@@ -1,0 +1,55 @@
+---
+
+- name: Check if payment-method converter directory exists
+  stat: path=/apps/payment-method
+  register: paymentmethod
+
+- name: Create directories for promtion programs
+  file:
+    path: /apps/payment-method
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not paymentmethod.stat.exists
+
+- name: delete existing files of nat configs
+  file: path=/apps/payment-method/* state=absent
+
+- name: Get the contents
+  get_url:
+    url: https://{{nat_url}}/payment-method/payment-method.tgz
+    dest: /apps/payment-method
+    use_proxy: no
+    validate_certs: no
+  when: nat_web_api
+
+- name: Get the contents
+  get_url:
+    url: https://{{non_nat_url}}/payment-method/payment-method.tgz
+    dest: /apps/payment-method
+    use_proxy: no
+    validate_certs: no
+  when: not nat_web_api
+
+
+- name: Unarchive files
+  unarchive:
+    src: /apps/payment-method/payment-method.tgz
+    dest: /apps/payment-method
+    remote_src: True 
+
+- name: Check if folder exists for payment-method
+  stat: path=/apps/payment-method/build
+  register: paymentmethodbuild
+
+- name: Move build contents to current
+  command:  mv build/* .
+  when: paymentmethodbuild.stat.exists
+
+- name: Delete existing files of nat configs
+  file: path=/apps/payment-method/build state=absent
+  when: paymentmethodbuild.stat.exists
+
+- name: Link apps json to opt web api json
+  command:  ln -sf /apps/payment-method/paymentMethods.json /opt/web-api/latest/assets/paymentMethods.json

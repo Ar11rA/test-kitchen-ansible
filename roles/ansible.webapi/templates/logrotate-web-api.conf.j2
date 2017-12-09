@@ -1,0 +1,11 @@
+/var/apps/web-api/*.log {
+  missingok
+  notifempty
+  compress
+  size 500M
+  daily
+  postrotate
+  /etc/init.d/pm2 reload
+  endscript
+  create 0755 root root
+}
