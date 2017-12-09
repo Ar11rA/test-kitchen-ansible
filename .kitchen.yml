@@ -91,3 +91,14 @@ suites:
     verifier:
       inspec_tests:
         - test/integration/webapi
+
+  - name: drupal
+    provisioner:
+      name: ansible_playbook
+      playbook: playbooks/drupal-playbook.yml
+      hosts: drupal
+      ansible_version: latest
+      require_chef_for_busser: false
+    verifier:
+      inspec_tests:
+        - test/integration/drupal
